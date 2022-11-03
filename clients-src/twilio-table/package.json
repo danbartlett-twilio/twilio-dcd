@@ -1,0 +1,22 @@
+{
+  "name": "twilio-table",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "vite build --emptyOutDir",
+    "dev": "vite",
+    "preview": "vite preview --port 5050"
+  },
+  "dependencies": {
+    "@vueuse/core": "^8.6.0",
+    "bootstrap-icons": "^1.8.2",
+    "pinia": "^2.0.14",
+    "vue": "^3.2.33",
+    "vue-router": "^4.0.14",
+    "vue-toastification": "^2.0.0-rc.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.1",
+    "vite": "^2.9.5",
+    "vue-cli-plugin-pinia": "~0.1.2"
+  }
+}

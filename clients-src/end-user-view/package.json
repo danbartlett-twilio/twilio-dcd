@@ -1,0 +1,20 @@
+{
+  "name": "end-user-view",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --emptyOutDir",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "@twilio/conversations": "^2.2.0",
+    "@vueuse/core": "^9.3.0",
+    "pinia": "^2.0.21",
+    "vue": "^3.2.38",
+    "vue-router": "^4.1.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.0.3",
+    "vite": "^3.0.9"
+  }
+}
