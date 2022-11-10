@@ -8,11 +8,9 @@ Omni-channel and conversational messaging sound great, but how can I visualize w
 
 This demo is a working app that is part contact center and part messaging app that you can deploy to your own Twilio Account. This project uses Conversations along with Twilio Functions and Twilio Sync.
 
-Here is an overview of everything including in this repo:
+Here is an overview of the demo application and everything including in this repo:
 
-![DFDP Overview](/Image-DeployableFlexDemoPlatform.png "DFDP Overview")
-
-
+![Deployable Conversations Demo](https://user-images.githubusercontent.com/78064764/201012578-803f7a86-6204-457d-925c-53e568cfc384.png)
 
 The "customizable code base" at the bottom is what you will deploy from this repo. You will use a Twilio Flex Instance, Twilio Functions, Twilio Sync, and Twilio Servics. Customers/Prospects will be able to interact with this platform via a single page application and their devices. Finally, a single page application for agents will be embedded into Flex for the agent's "single pane of glass".
 
