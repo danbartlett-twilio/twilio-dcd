@@ -19,7 +19,7 @@ export const useAgentStore = defineStore('agent', {
         if (res.ok) {
           let r = await res.json();
           //console.log("getToken r => ", r);          
-          console.log(typeof r.accessToken);
+          //console.log(typeof r.accessToken);
           this.agent.accessToken = r.accessToken;
           console.log("token value set...");
         } 
@@ -33,7 +33,7 @@ export const useAgentStore = defineStore('agent', {
         const res = await fetch(url, { method: "GET", cache: "no-store", headers: {'Content-type': 'application/json'} });
         if (res.ok) {
           let r = await res.json();
-          console.log("in getAgents and r => ", r);              
+          //console.log("in getAgents and r => ", r);              
           this.agents = r.map(a => a.data['Identity']).sort((a, b) => {return a.localeCompare(b, undefined, {sensitivity: 'base'});});              
         }
         

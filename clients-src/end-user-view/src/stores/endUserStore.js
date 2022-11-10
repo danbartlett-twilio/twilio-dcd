@@ -3,28 +3,20 @@ import { defineStore } from 'pinia'
 import { useStorage } from '@vueuse/core'
 
 export const useEndUserStore = defineStore('end-user', {
-  /*state: () => ({ 
-    endUser: {
-      name: "",    
-      accessToken: "",
-      activeConversation: "none"
-    }     
-  }),*/  
   state: () => ({     
     endUser: useStorage(
       'endUser',
       {
-        name: "",    
+        name: "",   
+        avatar: "",    
         accessToken: "",
-        activeConversation: "none"
+        supportConversation: ""
       },
       localStorage,
       { mergeDefaults: true } 
     )
   }),
-  getters: {
-
-  },
+  getters: {},
   actions: {   
     async getToken() {    
       try {        
@@ -42,8 +34,9 @@ export const useEndUserStore = defineStore('end-user', {
     },
     logout() {
       this.endUser.name = ""
-      this.endUser.accessToken = "",
-      this.endUser.activeConversation = "none"    
+      this.endUser.avatar = "",
+      this.endUser.accessToken = "", 
+      this.endUser.supportConversation = "none"    
     }       
   }
 

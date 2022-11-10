@@ -1,9 +1,10 @@
 <script setup>
-  import { ref, reactive, onMounted } from 'vue'
+  import { ref, reactive, onMounted, toRaw } from 'vue'
   import { useRoute, useRouter } from 'vue-router'  
   import { useListStore } from '../stores/listStore'
   import { useAgentStore } from '../stores/agentStore'  
-  import { useWebhookStore } from '../stores/webhookStore'  
+  import { useWebhookStore } from '../stores/webhookStore'
+  import { useChatButtonStore } from '../stores/chatButtonStore'  
   import { formatAuthor } from '../composables/formatAuthor.js'
   import { returnPartipantAttributes } from '../composables/returnParAttributes.js'
 
@@ -14,6 +15,7 @@
   const listStore = useListStore();  
   const agentStore = useAgentStore();          
   const webhookStore = useWebhookStore();          
+  const chatButtonStore = useChatButtonStore();          
   
   const route = useRoute();
   const router = useRouter();
@@ -41,7 +43,7 @@
       const res = await fetch(url, { method: "POST", headers: {'Content-type': 'application/json'}, body: JSON.stringify({"payload": {conversationSid: conversationId}}) });
       if (res.ok) {          
           console.log("Success! Conversation deleted...");
-          console.log("delete conversation response ==> ", res);        
+          //console.log("delete conversation response ==> ", res);        
           router.replace( { name: 'conversations' })
       }             
       
@@ -55,7 +57,7 @@
       let url = `${import.meta.env.VITE_DATA_URL}/conversations/conversation-change-name`;
       const res = await fetch(url, { method: "POST", headers: {'Content-type': 'application/json'}, body: JSON.stringify({"payload":  {conversationSid: conversationId, friendlyName:newConversationName.value}}) });
       if (res.ok) {          
-          console.log("Success! Conversation name changed...");
+          //console.log("Success! Conversation name changed...");
           addName.value = false;
           newConversationName.value = "";
           getConversationResources();                
@@ -82,6 +84,19 @@
 
   }
 
+  const removeMessage = async (sid) => {
+    
+    try {                
+      let url = `${import.meta.env.VITE_DATA_URL}/conversations/conversation-delete-message`;
+      const res = await fetch(url, { method: "POST", headers: {'Content-type': 'application/json'}, body: JSON.stringify({"payload": {conversationSid: conversationId, messageSid: sid} }) });
+      if (res.ok) {          
+        console.log("Success! Message Removed from Conversation...");
+        await getConversationMessages();
+      }             
+      
+    } catch (e) { console.log("removeFromConversation error => ", e); }      
+
+  }
   
   const addAgent = ref(false);
   const addAgentName = ref("");    
@@ -108,7 +123,7 @@
     
     try {                
       
-      console.log("addWHObj.value => ", addWHObj.value);
+      //console.log("addWHObj.value => ", addWHObj.value);
       
       let createObject = { configuration:{} };
       if (addWHObj.value.target != undefined) {createObject.target = addWHObj.value.target;}
@@ -118,7 +133,7 @@
       if (addWHObj.value.filters != undefined) {createObject.configuration.filters = addWHObj.value.filters;}
       if (addWHObj.value.url != undefined) {createObject.configuration.url = addWHObj.value.url;}
 
-      console.log("createObject => ", createObject);
+      //console.log("createObject => ", createObject);
 
       let url = `${import.meta.env.VITE_DATA_URL}/conversations/conversation-add-webhook`;
       const res = await fetch(url, { method: "POST", headers: {'Content-type': 'application/json'}, body: JSON.stringify({"payload": {conversationSid: conversationId, createObject:createObject} }) });
@@ -177,7 +192,7 @@
           addMobileErrorMsg.value = "That phone number is in use in a different conversation.";
         }
         addMobile.value = false;        
-        addMobileNumber = ""; 
+        addMobileNumber.value = ""; 
       }
       
     } catch (e) { console.log("addMobileToConversation error => ", e); }      
@@ -242,7 +257,7 @@
           addWhatsAppErrorMsg.value = "That WhatsApp phone number is in use in a different conversation.";
         }
         addWhatsApp.value = false;        
-        addWhatsAppNumber = ""; 
+        addWhatsAppNumber.value = ""; 
 
       }
       
@@ -257,7 +272,7 @@
       const res = await fetch(url, { method: "GET", cache: "no-store", headers: {'Content-type': 'application/json'} });
       if (res.ok) {
         let r = await res.json();
-        console.log("in getConversationDetails and r => ", r);
+        //console.log("in getConversationDetails and r => ", r);
         conversationDetails.details = r;
       }
       
@@ -274,20 +289,26 @@
       const res = await fetch(url, { method: "GET", cache: "no-store", headers: {'Content-type': 'application/json'} });
       if (res.ok) {
         let r = await res.json();
-        console.log("getConversationParticipants response ==> ", r);        
+        //console.log("getConversationParticipants response ==> ", r);        
           participants.value = r;
           for (let i=0;i<participants.value.length;i++) {                
             
-            console.log("participants.value[i].identity ==> ", participants.value[i].identity);
+            //console.log("participants.value[i].identity ==> ", participants.value[i].identity);
           
-            if (Object.keys(participants.value[i].attributes).length > 0) {
+            if (typeof JSON.parse(participants.value[i].attributes) === 'object') {
               participants.value[i].attributes = JSON.parse(participants.value[i].attributes);              
-            };
-            
+            } else {
+              participants.value[i].attributes = JSON.parse(JSON.parse(participants.value[i].attributes))
+            }            
+
+            if (Object.keys(participants.value[i].attributes).length === 0 && participants.value[i].messagingBinding.address !== undefined) {
+              participants.value[i].attributes = JSON.parse(returnPartipantAttributes('sms','enduser', participants.value[i].messagingBinding.address));              
+            }
+
             participantAttributeHash.value[participants.value[i].sid] = participants.value[i].attributes;
             
             if (participants.value[i].identity === agentStore.agent.identity) {
-              console.log("found current agent ==> ", participants.value[i].identity);
+              //console.log("found current agent ==> ", participants.value[i].identity);
               currentAgentSid.value = participants.value[i].sid;
               inConversation.value = true;
             }
@@ -305,9 +326,15 @@
       const res = await fetch(url, { method: "GET", cache: "no-store", headers: {'Content-type': 'application/json'} });
       if (res.ok) {
         let r = await res.json();                 
-        console.log("getConversationMessages response ==> ", r);        
+        //console.log("getConversationMessages response ==> ", r);        
         messages.value = r.reverse();
         for (let i=0;i<messages.value.length;i++) {    
+          //console.log("Message Attributes! ==> ", messages.value[i].attributes);
+          if (Object.keys(messages.value[i].attributes).length === 0) {
+            messages.value[i].attributes = {attributes:'none'}
+          } else {
+            messages.value[i].attributes = JSON.parse(messages.value[i].attributes);
+          }
           let pa = participantAttributeHash.value[messages.value[i].participantSid];
           if (pa == undefined) {
             pa = JSON.parse(returnPartipantAttributes('bot','bot', "Webhook"));
@@ -329,7 +356,7 @@
       const res = await fetch(url, { method: "GET", cache: "no-store", headers: {'Content-type': 'application/json'} });
       if (res.ok) {
         let r = await res.json();
-        console.log("getConversationWebhooks response ==> ", r);        
+        //console.log("getConversationWebhooks response ==> ", r);        
         webhooks.value = r;
         for(let i=0;i<webhooks.value.length;i++) {          
           // Pull the Name if the Webhook from TwilioTable List
@@ -358,29 +385,34 @@
   const connectToConversation = async () => {        
     conversationsClient = await new Client(agentStore.agent.accessToken);
     //conversationsClient = await Client.create(agentStore.agent.accessToken);
-    console.log("conversationsClient => ", conversationsClient);
-    console.log("in connectToConversation and conversationsClient => ", conversationsClient);
+    //console.log("conversationsClient => ", conversationsClient);
+    //console.log("in connectToConversation and conversationsClient => ", conversationsClient);
 
     twilioConversation = await conversationsClient.getConversationBySid(conversationId);
-    console.log("twilioConversation => ", twilioConversation);
+    
+    //console.log("twilioConversation => ", twilioConversation);
+    
     isConnected.value = true;
+    
     twilioConversation.on('messageAdded',message => {
-        console.log("New Message Added ==> ", message);
+        //console.log("New Message Added ==> ", message);
+        
         let pa = participantAttributeHash.value[message.participantSid];
         if (pa == undefined) {
           pa = JSON.parse(returnPartipantAttributes('bot','bot', "Webhook"));
           message.participantAttributes = pa;
         } else {
           message.participantAttributes = pa;
-        }                
+        }                        
         messages.value.unshift(message);   
-      });
-      twilioConversation.on('tokenExpired', obj => {
-        console.log("Token Expired!");
-      });
-      
+    });
 
+    twilioConversation.on('tokenExpired', obj => {
+       console.log("Token Expired!");
+    });
+      
   }
+
 
   const refreshToken = async () => {
     console.log("in refreshToken...");
@@ -397,7 +429,12 @@
       if(prependName.value) {
         m = agentStore.agent.identity + ': ' + m; 
       }      
-      await twilioConversation.sendMessage(m);              
+      let attributes = {
+        mType: 'agentChat',
+        agentMessage: true,
+        agentIdentity: agentStore.agent.identity        
+      }
+      await twilioConversation.prepareMessage().setBody(m).setAttributes(attributes).build().send();      
       newChatMessage.value = '';
       console.log("Sent Message...");
     } catch (e) {       
@@ -411,15 +448,51 @@
 
   const handleFileUpload = async() => {
 
+    let attributes = {
+        mType: 'agentChat',
+        agentMessage: true,
+        agentIdentity: agentStore.agent.identity        
+      }
+
     const sendMediaOptions = {
       contentType: file.value.files[0].type,
       filename: file.value.files[0].name,
       media: file.value.files[0]
     };
 
-    await twilioConversation.prepareMessage().addMedia(sendMediaOptions).build().send();
+    await twilioConversation.prepareMessage().setAttributes(attributes).addMedia(sendMediaOptions).build().send();
     sendImage.value = false;
     file.value = null;
+
+  }
+
+  const showInjectChat = ref(false);
+  const chatButton = ref({});  
+  const injectChatButton = async() => {
+    try {
+      let options = [];
+      let co = chatButton.value.Options.split(/\#/);
+      for (let i=0;i<co.length;i++) {
+        let o = co[i].split(/\|/);
+        let opt = {
+          label:o[0],
+          value:o[1],
+          style:o[2]
+        };
+        options.push(opt);
+      }      
+      let attributes = {
+        mType: 'chatButton',
+        id: chatButton.value.Id,
+        question: chatButton.value.Question,
+        options: options
+      }
+      await twilioConversation.prepareMessage().setBody("<Chat Button>").setAttributes(attributes).build().send();              
+      console.log("Injected Chat Button...");
+    } catch (e) {       
+      isConnected.value = false;
+      console.log("injectChatButton error => ", e); 
+    }       
 
   }
 
@@ -496,6 +569,18 @@
                 {{formatAuthor(p.identity)}}
                 &nbsp;
                 <button type="button" class="btn btn-sm btn-warning float-end" @click="removeFromConversation(p.sid)"><i class="bi-trash"></i></button>  
+            </li>
+            <li class="list-group-item text-center"> 
+              <button v-show="!showInjectChat" type="button" @click="showInjectChat = true" class="btn btn-sm btn-info">
+                Inject Chat Buttons
+              </button>
+              <div v-show="showInjectChat" class="input-group">                
+                <select class="form-select" v-model="chatButton">
+                  <option v-for="cb in chatButtonStore.chatbuttons" :key="cb.data.Id" :value="cb.data" >{{ cb.data.Label }}</option>
+                </select>                
+                <button type="button" class="btn btn-sm btn-success" @click="injectChatButton()"><i class="bi-input-cursor"></i> Inject</button>          
+                <button type="button" class="btn btn-sm btn-light" @click="showInjectChat = false"><i class="bi-x"></i></button>          
+              </div>                
             </li>
           </ul>            
           <ul class="list-group mb-3">
@@ -595,7 +680,7 @@
           </div>
           <div class="bg-info rounded" style="min-height:200px;">
             <div ref="messagesDiv" class="container-fluid pt-3 pb-3">
-              <message v-for="m in messages" v-bind:participant="m.participantAttributes" v-bind:key="m.sid" v-bind:mSid="m.sid" v-bind:pSid="m.participantSid" v-bind:dateCreated="m.dateCreated" v-bind:author="m.author" v-bind:content="m.body" v-bind:media="m.media" v-bind:cSid="conversationDetails.details.sid"></message>
+              <message @removeMessage="(sid) => removeMessage(sid)" v-for="m in messages" v-bind:participant="m.participantAttributes" v-bind:mAttributes="m.attributes" v-bind:key="m.sid" v-bind:mSid="m.sid" v-bind:pSid="m.participantSid" v-bind:dateCreated="m.dateCreated" v-bind:author="m.author" v-bind:content="m.body" v-bind:media="m.media" v-bind:cSid="conversationDetails.details.sid"></message>
             </div>
          </div>
          <p class="float-end"><em>{{conversationDetails.details.sid}}</em></p>

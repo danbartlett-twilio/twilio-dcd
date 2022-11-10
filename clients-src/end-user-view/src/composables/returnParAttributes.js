@@ -1,7 +1,8 @@
-export function returnPartipantAttributes(channel,userType, displayName) {        
+export function returnPartipantAttributes(channel,userType, displayName, avatar) {        
     
     let attributes = {
         displayName: displayName,
+        avatar: avatar,
         sms:false,
         chat:false,
         whatsapp:false,

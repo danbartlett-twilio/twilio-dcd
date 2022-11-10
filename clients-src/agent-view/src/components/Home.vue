@@ -3,6 +3,7 @@
   import { RouterLink } from 'vue-router'
   import { useListStore } from '../stores/listStore' 
   import { useAgentStore } from '../stores/agentStore' 
+    
 
   const listStore = useListStore();  
   const agentStore = useAgentStore();  
@@ -10,7 +11,7 @@
   onBeforeMount(async () => {
     if (listStore.lists.length === 0) {
         await listStore.getAllSyncLists();
-        console.log("lists => ", listStore.lists);
+        //console.log("lists => ", listStore.lists);
     }
   })
 

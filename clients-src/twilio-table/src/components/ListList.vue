@@ -108,7 +108,7 @@
         <div class="alert alert-danger mb-4">
           <p class="fw-bolder">You need to add "TwilioTableMain" to your sync service!</p>
           <p>
-            TwilioTable uses a list to store meta data about all of the tables (Sync Lists)
+            Sync Demo GUI uses a list to store meta data about all of the tables (Sync Lists)
             that you create. You must create this Sync List to continue.
             Click on the button below to create a Twilio Sync List called
             "TwilioTableMain".  

@@ -1,6 +1,7 @@
 <script>
     import { ref, computed, onMounted, toRaw } from 'vue'
     import { formatDate } from '../composables/formatDate.js'
+    import { formatJustTime } from '../composables/formatJustTime.js'
     import { formatAuthor } from '../composables/formatAuthor.js'
     import { getMediaUrl } from '../composables/getMediaUrl.js'
     import { useMessageComputed } from '../composables/messageComputed.js'
@@ -49,13 +50,21 @@
                 alert(`Optionally trigger action in web browser.\n\nfn("${endUserStore.endUser.name}","${id}","${title}","${answer}")`)                
                 ctx.emit('sendAnswer', {id:id,title:title,answer:answer,person:endUserStore.endUser.name,style});                
             }
+
+            const getAvatar = computed(() => {
+                if (participant !== undefined && participant.avatar !== undefined && participant.avatar !== '') {
+                    return participant.avatar;
+                } else {
+                    return "https://picsum.photos/id/237/50";
+                }        
+            });            
             
             return {
                 author, content, dateCreated, participant,
                 mSid, pSid, isMedia, mAttributes, imageUrl,
                 isChatButton, isSms, isChat, isCustomer, isBot, isWhatsapp, isAgent,
-                formatDate:formatDate, formatAuthor:formatAuthor,
-                answerQuestion
+                formatJustTime:formatJustTime, formatAuthor:formatAuthor,
+                answerQuestion, getAvatar
 
             }
         }
@@ -75,20 +84,22 @@
             isChatButton => {{isChatButton}} 
         </p>-->
 
-        <div v-if="!isChatButton" class="bg-warning text-start mb-2" :class="{ 'text-start': isCustomer,'text-end': !isCustomer  }">                                  
-            <span class="fs-4 fw-bold badge text-wrap" :class="{ 'text-start': isCustomer,'text-end': !isCustomer,'bg-light': isCustomer,'text-dark': isCustomer, 'bg-success': isAgent, 'bg-secondary': isBot  }">
-                <i v-if="isSms" class="bi-phone"></i> 
-                <i v-if="isChat" class="bi-person-workspace"></i>
-                <i v-if="isWhatsapp" class="bi-phone"></i> 
-                <i v-if="isBot" class="bi-robot"></i> 
-                <span v-if="!isMedia" class="ms-2">{{content}}</span>
-                <span v-if="isMedia"><img :src="imageUrl" style="max-height:300px;max-width:300px;" class="ms-2 img-fluid rounded" /></span>
-            </span>
-            <p class="mt-1">
-                <small><span class="fst-italic">{{author}} - {{formatDate(dateCreated)}}</span></small>
-            </p>            
+        <div v-if="!isChatButton" class="mb-2 ms-4">
+            <table class="table align-top">
+                <tr>
+                    <td class="align-top" style="width:50px"><img :src="getAvatar" class="rounded p-0" /></td>
+                    <td class="align-top pt-0">
+                        <p class="pt-0 pb-0 mb-1 lh-1">
+                            <span class="pt-0 fw-bold fs-4">{{author}}</span>
+                            <span class="pt-0 fs-5 ms-2">{{formatJustTime(dateCreated)}}</span>                            
+                        </p>
+                        <p v-if="!isMedia" class="pt-0 lead">{{content}}</p>
+                        <p v-if="isMedia"  class="pt-0 lead"><img :src="imageUrl" style="max-height:300px;max-width:300px;" class="img-fluid rounded" /></p>
+                    </td>
+                </tr>
+            </table>  
         </div>  
-        <div v-if="isChatButton" class="text-start mb-4">                                  
+        <div v-if="isChatButton" class="text-start ms-4 mb-4">                                  
             <div v-if="mAttributes.mType === 'chatButton'">
                 <h5>{{mAttributes.question}}</h5>
                 <div class="btn-group d-flex " role="group" aria-label="...">

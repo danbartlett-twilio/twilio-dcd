@@ -15,7 +15,7 @@ export const useWebhookStore = defineStore('webhooks', {
         const res = await fetch(url, { method: "GET", cache: "no-store", headers: {'Content-type': 'application/json'} });
         if (res.ok) {
           let r = await res.json();
-          console.log("in webhookStore getWebhooks and r => ", r);              
+          //console.log("in webhookStore getWebhooks and r => ", r);              
           this.webhooks = r;            
         }
         

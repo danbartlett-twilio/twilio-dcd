@@ -4,9 +4,11 @@
   import { useListStore } from '../stores/listStore' 
   import { useAgentStore } from '../stores/agentStore'  
   import { useWebhookStore } from '../stores/webhookStore'  
+  import { useChatButtonStore } from '../stores/chatButtonStore'  
   
   const listStore = useListStore() 
   const webhookStore = useWebhookStore();    
+  const chatButtonStore = useChatButtonStore(); 
   const agentStore = useAgentStore();    
 
   const router = useRouter();
@@ -18,7 +20,7 @@
 
   const createAccount = async () => {
 
-    console.log("in createAccount...")     
+    //console.log("in createAccount...")     
 
     let a = {
       "Identity":createAgent.value
@@ -50,7 +52,8 @@
   onMounted(async () => {
     
     await agentStore.getAgents();  
-    await webhookStore.getWebhooks();        
+    await webhookStore.getWebhooks();   
+    await chatButtonStore.getChatButtons();        
 
   })
 

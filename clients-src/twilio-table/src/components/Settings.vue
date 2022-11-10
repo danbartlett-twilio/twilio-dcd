@@ -52,10 +52,10 @@
 
 <template>
   <div class="container pt-3">
-    <h1 class="mb-5">TwilioTable > Settings</h1>
+    <h1 class="mb-5">Sync Demo GUI > Settings</h1>
 
     <p class="fs-5">
-      TwilioTable needs a Sync Service. The SID for the Sync Service is stored as 
+      Sync Demo GUI needs a Sync Service. The SID for the Sync Service is stored as 
       an environment variable in your Function Service. The easiest way to set your
       Sync Service SID is by adding it to the .env file.
     </p>

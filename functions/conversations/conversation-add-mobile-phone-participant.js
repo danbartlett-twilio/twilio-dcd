@@ -21,7 +21,7 @@ exports.handler = async function(context, event, callback) {
         .create({
             'messagingBinding.address': event.payload.mobile_number,
             'messagingBinding.proxyAddress': context.TWILIO_PHONE_NUMBER,
-            'attributes': event.payload.attributes
+            'attributes': JSON.stringify(event.payload.attributes)            
         })
         .then(participant => {
             response.appendHeader('Content-Type', 'application/json');

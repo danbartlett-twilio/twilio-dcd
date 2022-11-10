@@ -14,18 +14,16 @@ exports.handler = async function(context, event, callback) {
     // Pull the response object from helper library
     const response =  await rsp.formatResponseHeader()
 
-    console.log("event.payload.sid is => ", event.payload.sid);
+    console.log("in convervation-delete-message amd event.payload.participant is => ", event.payload.participant);
 
-    client.conversations.conversations
-        .create({
-            messagingServiceSid: context.MESSAGING_SERVICE_SID,
-            friendlyName: event.payload.conversationName,
-            attributes: JSON.stringify(event.payload.attributes)
-        })        
-        .then(conversation => {
+    client.conversations
+        .conversations(event.payload.conversationSid)
+        .messages(event.payload.messageSid)
+        .remove()
+        .then( result => {
             response.appendHeader('Content-Type', 'application/json');
-            response.setBody({sid:conversation.sid}); 
-            console.log(conversation.sid)            
+            response.setBody({message:"removed message"}); 
+            console.log("removed message...")            
             callback(null, response);               
         })
         .catch(err => {
@@ -34,6 +32,5 @@ exports.handler = async function(context, event, callback) {
             response.setBody(err);
             response.setStatusCode(err.status);
             return callback(null, response);
-          });
-
+          });                  
 };
