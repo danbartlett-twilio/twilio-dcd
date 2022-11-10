@@ -12,7 +12,7 @@ Here is an overview of the demo application and everything including in this rep
 
 ![Deployable Conversations Demo](https://user-images.githubusercontent.com/78064764/201012578-803f7a86-6204-457d-925c-53e568cfc384.png)
 
-The "customizable code base" at the bottom is what you will deploy from this repo. You will use a Twilio Flex Instance, Twilio Functions, Twilio Sync, and Twilio Servics. Customers/Prospects will be able to interact with this platform via a single page application and their devices. Finally, a single page application for agents will be embedded into Flex for the agent's "single pane of glass".
+The "customizable code base" is what you will deploy from this repo. You will also need to provision some resources from a Twilio account (Conversation Service, Sync Service, Messaging Service). End Users will be able to interact with this platform via a single page application and their devices. 
 
 1. Download this repo
 2. run `npm install` from the main directory to add all of the necessary node 
