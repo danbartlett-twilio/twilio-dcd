@@ -21,7 +21,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   
-  // make sure TwilioTable List Store is populated
+  // make sure Sync Twilio Table List Store is populated
   const listStore = useListStore();
   if (listStore.lists.length === 0 && to.name !== 'home') {    
     return { name: 'home' }

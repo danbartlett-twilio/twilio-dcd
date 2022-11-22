@@ -29,7 +29,7 @@ export const useAgentStore = defineStore('agent', {
       const listStore = useListStore()  
       const agentObj = listStore.lists.find(o => o.uniqueName === 'AgentList');                
       try {                
-        let url = `${import.meta.env.VITE_DATA_URL}/twilio-table-sync/list-item-get-array?targetList=${agentObj.sid}`;                        
+        let url = `${import.meta.env.VITE_DATA_URL}/sync/list-item-get-array?targetList=${agentObj.sid}`;                        
         const res = await fetch(url, { method: "GET", cache: "no-store", headers: {'Content-type': 'application/json'} });
         if (res.ok) {
           let r = await res.json();

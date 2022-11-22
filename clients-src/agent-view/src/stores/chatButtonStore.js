@@ -11,7 +11,7 @@ export const useChatButtonStore = defineStore('chatButtons', {
       const listStore = useListStore()  
       const cbObj = listStore.lists.find(o => o.uniqueName === 'ChatButtonList');                
       try {                
-        let url = `${import.meta.env.VITE_DATA_URL}/twilio-table-sync/list-item-get-array?targetList=${cbObj.sid}`;                        
+        let url = `${import.meta.env.VITE_DATA_URL}/sync/list-item-get-array?targetList=${cbObj.sid}`;                        
         const res = await fetch(url, { method: "GET", cache: "no-store", headers: {'Content-type': 'application/json'} });
         if (res.ok) {
           let r = await res.json();

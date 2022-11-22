@@ -359,7 +359,7 @@
         //console.log("getConversationWebhooks response ==> ", r);        
         webhooks.value = r;
         for(let i=0;i<webhooks.value.length;i++) {          
-          // Pull the Name if the Webhook from TwilioTable List
+          // Pull the Name if the Webhook from Sync List
           webhooks.value[i].Name = webhookStore.webhooks.find(wh => wh.data.flowSid === webhooks.value[i].configuration.flow_sid).data.Name;
         }
       }

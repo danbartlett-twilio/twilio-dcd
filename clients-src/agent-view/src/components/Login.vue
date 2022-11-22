@@ -26,7 +26,7 @@
       "Identity":createAgent.value
     };
 
-    let url = `${import.meta.env.VITE_DATA_URL}/twilio-table-sync/list-item-create?targetList=${agentObj.sid}`;
+    let url = `${import.meta.env.VITE_DATA_URL}/sync/list-item-create?targetList=${agentObj.sid}`;
     const na = await fetch(url, { method: "POST", headers: {'Content-type': 'application/json'}, body: JSON.stringify({"payload": a}) });
     if (na.ok) {
       await na.json();        

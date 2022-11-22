@@ -6,7 +6,7 @@ export const useListStore = defineStore('list', {
   actions: {    
     async getAllSyncLists() {    
       try {
-        let url = `${import.meta.env.VITE_DATA_URL}/twilio-table-sync/list-all`;          
+        let url = `${import.meta.env.VITE_DATA_URL}/sync/list-all`;          
         const res = await fetch(url, { method: "GET", cache: "no-store", headers: {'Content-type': 'application/json'} })
         //console.log("res => ", res);
         if (res.ok) {
