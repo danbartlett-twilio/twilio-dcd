@@ -6,9 +6,9 @@ import vue from '@vitejs/plugin-vue'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
-  base: "/clients/sync-gui/",
+  base: "/clients/sync-helper/",
   build: {    
-    outDir: "../../assets/clients/sync-gui/",
+    outDir: "../../assets/clients/sync-helper/",
     
   },  
   resolve: {
