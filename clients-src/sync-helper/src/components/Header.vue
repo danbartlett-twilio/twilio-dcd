@@ -13,7 +13,7 @@ import { RouterLink } from 'vue-router'
           </a>
 
           <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-            <li><router-link class="nav-link px-2 text-white" to="/about">Sync GUI</router-link></li>
+            <li><router-link class="nav-link px-2 text-white" to="/about">Sync Helper</router-link></li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle px-2 text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Lists
