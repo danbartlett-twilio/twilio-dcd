@@ -289,20 +289,25 @@
       const res = await fetch(url, { method: "GET", cache: "no-store", headers: {'Content-type': 'application/json'} });
       if (res.ok) {
         let r = await res.json();
-        //console.log("getConversationParticipants response ==> ", r);        
+        console.log("getConversationParticipants response ==> ", r);        
           participants.value = r;
           for (let i=0;i<participants.value.length;i++) {                
             
             //console.log("participants.value[i].identity ==> ", participants.value[i].identity);
           
-            if (typeof JSON.parse(participants.value[i].attributes) === 'object') {
+            if (typeof JSON.parse(participants.value[i].attributes) === 'object') {              
               participants.value[i].attributes = JSON.parse(participants.value[i].attributes);              
             } else {
               participants.value[i].attributes = JSON.parse(JSON.parse(participants.value[i].attributes))
             }            
 
             if (Object.keys(participants.value[i].attributes).length === 0 && participants.value[i].messagingBinding.address !== undefined) {
-              participants.value[i].attributes = JSON.parse(returnPartipantAttributes('sms','enduser', participants.value[i].messagingBinding.address));              
+              if (participants.value[i].messagingBinding.type === 'whatsapp') {
+                console.log("whatsapp channel...");
+                participants.value[i].attributes = JSON.parse(returnPartipantAttributes('whatsapp','enduser', participants.value[i].messagingBinding.address));                
+              } else {
+                participants.value[i].attributes = JSON.parse(returnPartipantAttributes('sms','enduser', participants.value[i].messagingBinding.address));
+              }              
             }
 
             participantAttributeHash.value[participants.value[i].sid] = participants.value[i].attributes;
@@ -585,7 +590,7 @@
           </ul>            
           <ul class="list-group mb-3">
             <li class="list-group-item list-group-item-success">End User SMS <i class="bi-phone"></i></li>
-            <li v-show="p.messagingBinding != null && p.attributes.enduser" class="list-group-item" v-for="p in participants" v-bind:key="p.sid">              
+            <li v-show="p.messagingBinding != null && p.attributes.enduser && p.attributes.sms" class="list-group-item" v-for="p in participants" v-bind:key="p.sid">              
                 {{p.messagingBinding?.address}}
                 <button type="button" class="btn btn-sm btn-warning float-end" @click="removeFromConversation(p.sid)"><i class="bi-trash"></i></button>  
             </li>
@@ -601,10 +606,10 @@
           </ul>               
           <ul class="list-group mb-3">
             <li class="list-group-item list-group-item-success">End User WhatsApp <i class="bi-whatsapp"></i></li>
-            <!--<li v-show="p.messagingBinding != null" class="list-group-item" v-for="p in participants" v-bind:key="p.sid">              
+            <li v-show="p.messagingBinding != null && p.attributes.enduser && p.attributes.whatsapp" class="list-group-item" v-for="p in participants" v-bind:key="p.sid">              
                 {{p.messagingBinding?.address}}
                 <button type="button" class="btn btn-sm btn-warning float-end" @click="removeFromConversation(p.sid)"><i class="bi-trash"></i></button>  
-            </li>-->
+            </li>            
             <li class="list-group-item">            
               <span v-show="!addWhatsApp">Add WhatsApp Participant</span>
               <button v-show="!addWhatsApp" type="button" class="btn btn-sm btn-success float-end" @click="addWhatsApp = true"><i class="bi-whatsapp"></i></button>

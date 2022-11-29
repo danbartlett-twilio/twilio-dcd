@@ -78,8 +78,8 @@
         <div v-if="!isChatButton" class="bg-warning text-start mb-2" :class="{ 'text-start': isCustomer,'text-end': !isCustomer  }">                                  
             <span class="fs-4 fw-bold badge text-wrap" :class="{ 'text-start': isCustomer,'text-end': !isCustomer,'bg-light': isCustomer,'text-dark': isCustomer, 'bg-success': isAgent, 'bg-secondary': isBot  }">
                 <i v-if="isSms" class="bi-phone"></i> 
-                <i v-if="isChat" class="bi-person-workspace"></i>
-                <i v-if="isWhatsapp" class="bi-phone"></i> 
+                <i v-if="isChat" class="bi-person-workspace"></i>                
+                <i v-if="isWhatsapp" class="bi-whatsapp"></i> 
                 <i v-if="isBot" class="bi-robot"></i> 
                 <span v-if="!isMedia" class="ms-2">{{content}}</span>
                 <span v-if="isMedia"><img :src="imageUrl" style="max-height:300px;max-width:300px;" class="ms-2 img-fluid rounded" /></span>
