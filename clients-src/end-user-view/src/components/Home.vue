@@ -175,7 +175,7 @@
                   {{endUserStore.endUser.name}}
                 </h3>             
                 <p v-show="!hasName" class="card-text fs-4 mb-5">
-                  In order order to enter a conversation, you to enter a name
+                  In order order to enter a conversation, you need to enter a name
                   and then create an access token.                  
                 </p>
                 <div v-show="!hasName">
