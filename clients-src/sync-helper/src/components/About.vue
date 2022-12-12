@@ -15,7 +15,7 @@
       a set of functions to CRUD the data.
     </p>
     <p>
-      You can also manage you data directly from the Twilio Console.
+      You can also manage your data directly from the Twilio Console.
     </p>
     <p>
       Since Sync Helper is in the Twilio platfom so it is easy to integrate with
